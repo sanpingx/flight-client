@@ -3,15 +3,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import Header from '@components/common/Header';
 import Button from '@components/ui/Button';
 import Table from '@components/ui/Table';
-import { FlightListFormData } from '@types/FlightList';
-import * as api from '@api';
+import { FlightListFormData } from '@/types';
+import * as api from '@/api';
 import toast from '@config/toast';
 import { DynamicTable } from '@/components/ui/DynamicTable';
 
 const FlightListPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState<FlightListFormData>([]);
+  const [formData, setFormData] = useState<FlightListFormData[]>([]);
 
   const handleClick = (e: any, row: any) => {
     navigate('/flight', { state: row.original });
@@ -98,7 +98,16 @@ const FlightListPage: React.FC = () => {
           cellClassName="border-r last:border-r-0"
           onRowClick={handleRowClick}
         /> */}
-        <Table columns={columns} data={formData} />
+        <Table
+          columns={columns}
+          data={formData}
+          // style={{
+          //   header: {
+          //     background: '#f2f2f2',
+          //     fontSize: '14px',
+          //   },
+          // }}
+        />
       </div>
     </div>
   );

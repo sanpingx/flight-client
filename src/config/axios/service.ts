@@ -46,6 +46,7 @@ const service: AxiosInstance = axios.create({
 // request拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    console.log('query data:', config.data)
     // 是否需要设置 token
     let isToken = (config!.headers || {}).isToken === false
     whiteList.some((v) => {

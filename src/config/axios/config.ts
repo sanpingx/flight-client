@@ -1,3 +1,5 @@
+import { AxiosHeaders } from "axios"
+
 const config: {
   base_url: string
   result_code: number | string

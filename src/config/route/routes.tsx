@@ -1,12 +1,14 @@
-import { Navigate } from 'react-router-dom';
-
 // Import page element
-import Login from '@pages/login';
-import Register from '@pages/register';
-import Search from '@pages/search';
-import Book from '@pages/book';
+import OrderPage from '@pages/book';
 import Flight from '@pages/flight';
 import FlightList from '@pages/flightList';
+import Login from '@pages/login';
+import Register from '@pages/register';
+// import Search from '@pages/search';
+import CompletionPage from '@pages/completion';
+import OrderList from '@pages/orderList';
+import PaymentPage from '@pages/payment';
+import FlightSearch from '@pages/search';
 
 export const routes = [
   {
@@ -23,31 +25,41 @@ export const routes = [
   },
   {
     path: '/search',
-    meta: {
-      requireAuth: true, // 添加该字段，表示进入这个路由是需要登录的
-    },
-    element: <Search />,
+    requireAuth: true,
+    element: <FlightSearch />,
   },
   {
     path: '/book',
-    meta: {
-      requireAuth: true, // 添加该字段，表示进入这个路由是需要登录的
-    },
-    element: <Book />,
+    requireAuth: true,
+    element: <OrderPage />,
   },
   {
     path: '/flight',
-    meta: {
-      requireAuth: true, // 添加该字段，表示进入这个路由是需要登录的
-    },
+    requireAuth: true,
     element: <Flight />,
   },
 
   {
     path: '/flightList',
-    meta: {
-      requireAuth: true, // 添加该字段，表示进入这个路由是需要登录的
-    },
+    requireAuth: true,
     element: <FlightList />,
+  },
+
+  {
+    path: '/orderList',
+    requireAuth: true,
+    element: <OrderList />,
+  },
+
+  {
+    path: '/payment',
+    requireAuth: true,
+    element: <PaymentPage />,
+  },
+
+  {
+    path: '/completion',
+    requireAuth: true,
+    element: <CompletionPage />,
   },
 ];

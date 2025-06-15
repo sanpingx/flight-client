@@ -1,129 +1,121 @@
-import React, { useState } from 'react';
+import * as api from '@/api';
+import { LockOutlined, MailOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
+import toast from '@config/toast';
+import { Button, Card, Form, Input, message, Select } from 'antd';
 import { Link } from 'react-router-dom';
-import Header from '@components/common/Header';
-import Button from '@components/ui/Button';
-import InputField from '@components/ui/InputField';
-import { RegisterFormData } from '@types/Register';
-import * as api from '@/api'
-import toast from '@config/toast'
+const { Option } = Select;
 
-const RegisterPage: React.FC = () => {
-  const [formData, setFormData] = useState<RegisterFormData>({
-    email: '',
-    password: '',
-    firstName: '',
-    lastName: '',
-    country: '',
-    phone: '',
-    region: '',
+const RegisterPage = () => {
+  const onFinish = async (values: any) => {
+    values.firstName = values.name.split(' ')[0];
+    values.lastName = values.name.includes(' ') ? values.name.split(' ')[1] : '';
+    console.log('Received values of form: ', values);
+    const res = await api.register(values);
+    toast.success('注册成功');
+    // console.log('Received values of form: ', values);
+    // message.success('注册成功');
+    // 这里添加注册逻辑
+  };
+
+  const validatePassword = ({ getFieldValue }) => ({
+    validator(_: any, value: any) {
+      if (!value || getFieldValue('password') === value) {
+        return Promise.resolve();
+      }
+      return Promise.reject(new Error('两次输入的密码不匹配!'));
+    },
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Login attempt with:', formData);
-    api.register(formData);
-    toast.success("注册成功");
-    // Here you would typically call an authentication API
-  };
-
-  const handleForgotCredentials = () => {
-    console.log('Forgot credentials clicked');
-    // Navigate to password recovery page
-  };
-
   return (
-    <div className="w-full min-h-screen bg-white">
-      <Header 
-        bookIsDisplay={false}
-        manageIsDisplay={false}
-        loginIsDisplay={false}
-      />
-      
-      <div className="max-w-[540px] mx-auto px-4 pt-14 pb-10">
-        <h1 className="text-[28px] font-bold text-[#111416] font-['Plus_Jakarta_Sans'] text-center mb-6">
-          Create your account
-        </h1>
-        
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          <InputField 
-            label="Email address"
-            placeholder="Enter your email address"
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        background: '#f0f2f5',
+      }}
+    >
+      <Card title="用户注册" style={{ width: 500 }}>
+        <Form name="register" onFinish={onFinish} scrollToFirstError>
+          <Form.Item
             name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-          />
-          
-          <InputField 
-            label="Password"
-            placeholder="Enter your password"
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleInputChange}
-          />
-
-          <InputField 
-            label="First name"
-            placeholder="Enter your first name"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleInputChange}
-          />
-
-          <InputField 
-            label="Last name"
-            placeholder="Enter your last name"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleInputChange}
-          />
-          
-          <InputField 
-            label="Country"
-            placeholder="Enter your country"
-            name="country"
-            value={formData.country}
-            onChange={handleInputChange}
-          />
-
-          <InputField 
-            label="Region"
-            placeholder="Enter your region"
-            name="region"
-            value={formData.region}
-            onChange={handleInputChange}
-          />
-
-          <InputField 
-            label="Phone number"
-            placeholder="Enter your phone number"
-            name="phone"
-            value={formData.phone}
-            onChange={handleInputChange}
-          />
-
-          <button 
-            type="button" 
-            onClick={handleForgotCredentials}
-            className="text-[14px] font-normal text-[#6b7782] font-['Plus_Jakarta_Sans'] text-left mt-2"
+            rules={[
+              { type: 'email', message: '请输入有效的邮箱地址!' },
+              { required: true, message: '请输入您的邮箱!' },
+            ]}
           >
-            
-          </button>
-          
-          <Button type="submit" fullWidth>
-            Register
-          </Button>
-          
-        </form>
-      </div>
+            <Input prefix={<MailOutlined />} placeholder="邮箱" />
+          </Form.Item>
+
+          <Form.Item name="phone" rules={[{ required: true, message: '请输入您的电话号码!' }]}>
+            <Input prefix={<PhoneOutlined />} placeholder="电话号码" />
+          </Form.Item>
+
+          <Form.Item name="name" rules={[{ required: true, message: '请输入您的姓名!' }]}>
+            <Input prefix={<UserOutlined />} placeholder="姓名" />
+          </Form.Item>
+
+          <Form.Item
+            name="password"
+            rules={[
+              { required: true, message: '请输入密码!' },
+              { min: 8, message: '密码至少8个字符!' },
+              { pattern: /^(?=.*[A-Za-z])(?=.*\d).+$/, message: '密码必须包含字母和数字!' },
+            ]}
+            hasFeedback
+          >
+            <Input.Password prefix={<LockOutlined />} placeholder="密码" />
+          </Form.Item>
+
+          <Form.Item
+            name="confirm"
+            dependencies={['password']}
+            hasFeedback
+            rules={[{ required: true, message: '请确认密码!' }, validatePassword]}
+          >
+            <Input.Password prefix={<LockOutlined />} placeholder="确认密码" />
+          </Form.Item>
+
+          <Form.Item name="country" rules={[{ required: true, message: '请选择您的国家!' }]}>
+            <Select placeholder="选择国家">
+              <Option value="china">中国</Option>
+              <Option value="usa">美国</Option>
+              <Option value="uk">英国</Option>
+              <Option value="japan">日本</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item name="region" rules={[{ required: true, message: '请选择您的地区!' }]}>
+            <Select placeholder="选择地区">
+              <Option value="east">东部</Option>
+              <Option value="west">西部</Option>
+              <Option value="south">南部</Option>
+              <Option value="north">北部</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item name="gender" rules={[{ required: true, message: '请选择您的性别!' }]}>
+            <Select placeholder="选择性别">
+              <Option value="male">男</Option>
+              <Option value="female">女</Option>
+              <Option value="other">其他</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+              注册
+            </Button>
+            <p className="text-[14px] font-normal text-[#6b7782] font-['Plus_Jakarta_Sans'] text-center mt-4">
+              已有账号?{' '}
+              <Link to="/login" className="text-[#6b7782]">
+                立即登录
+              </Link>
+            </p>
+          </Form.Item>
+        </Form>
+      </Card>
     </div>
   );
 };

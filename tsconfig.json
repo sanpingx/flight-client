@@ -17,25 +17,24 @@
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "paths": {
-      "@": ["/src"],
-      "@components": ["/src/components"],
-      "@pages": ["/src/pages"],
-      "@assets":["/src/assets"],
-      "@constants": ["/src/constants"],
-      "@styles": ["/src/styles"],
-      "@types": ["/src/types"],
-      "@config": ["/src/config"],
-      "@api": ["/src/api"],
-      "@@": [""],
-      "@/*": [
-        "src/*"
-      ]
+
+      "@components/*": ["./src/components/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@assets/*":["./src/assets/*"],
+      "@constants/*": ["./src/constants/*"],
+      "@styles/*": ["./src/styles/*"],
+      // "@types/*": ["./src/types/*"],
+      "@config/*": ["./src/config/*"],
+      // "@api/*": ["./src/api/*"],
+      "@/*": ["./src/*"],  // 如果写成"@": ["./src"]vscode会报错 
+      "@@/*": ["./*"],
     }
   },
   "include": [
-    "src"
+    "src",
+    
   ],
   "references": [
     {

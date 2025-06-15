@@ -1,13 +1,15 @@
 import React from 'react';
+import { Toaster } from 'react-hot-toast';
 import Routes from './Routes';
-import toast, { Toaster } from 'react-hot-toast';
 
 
 const App: React.FC = () => {
   return (
       <>
+      {/* <AuthProvider> */}
       <Routes />
       <Toaster />
+      {/* </AuthProvider> */}
       </>
   );
 };

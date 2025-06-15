@@ -21,12 +21,12 @@ const Header: React.FC<HeaderProps> = ({
       <div className="flex items-center gap-6">
         {bookIsDisplay && (
           <Link to="/search" className="text-[14px] font-medium text-[#111416] font-['Plus_Jakarta_Sans']">
-            Book
+            航班查询
           </Link>
         )}
         {manageIsDisplay && (
-          <Link to="/book" className="text-[14px] font-medium text-[#111416] font-['Plus_Jakarta_Sans']">
-            Manage
+          <Link to="/orderList" className="text-[14px] font-medium text-[#111416] font-['Plus_Jakarta_Sans']">
+            我的订单
           </Link>
         )}
         {loginIsDisplay && (

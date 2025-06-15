@@ -9,7 +9,7 @@ export default defineConfig(({command,mode}:ConfigEnv) :UserConfig =>{
     const env = loadEnv(mode, process.cwd()); 
     // const isProd = mode === 'production';
     // const isBuild = command === 'build';
-    // console.log('env',env);
+    console.log('env',env);
 
     return {
 
@@ -24,10 +24,10 @@ export default defineConfig(({command,mode}:ConfigEnv) :UserConfig =>{
           '@pages': '/src/pages',
           '@assets': '/src/assets',
           '@constants': '/src/constants',
-          '@styles': '/src/styles',
-          '@types': '/src/types',
+          '@styless': '/src/styless',
+          // '@types': '/src/types', // @types有冲突?
           '@config': '/src/config',
-          '@api': '/src/api',
+          // '@api': '/src/api',// @api有冲突?
           '@@': '',
         },
       },
@@ -36,7 +36,8 @@ export default defineConfig(({command,mode}:ConfigEnv) :UserConfig =>{
         host: env.VITE_WEB_URL,
         strictPort: true,
         // allowedHosts: ['.amazonaws.com', '.builtwithrocket.new'],
-
+        // 当项目部署到Nginx后，前端通过Vite配置的代理设置不再生效!!!
+        // 因为Vite的代理配置仅在开发服务器运行时有效‌
         // 配置代理解决跨域问题，将/api 开头的请求代理到http://127.0.0.1:48081
         proxy:{
           [env.VITE_API_URL]:{

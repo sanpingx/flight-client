@@ -1,82 +1,113 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { CreditCardOutlined } from '@ant-design/icons';
 import Header from '@components/common/Header';
-import Button from '@components/ui/Button';
-import InputField from '@components/ui/InputField';
-import { BookFormData } from '@types/Book';
-import * as api from '@api';
-import toast from '@config/toast';
+import { useAuth } from '@config/route/authContext';
+import { Button, Card, Descriptions, Divider, Steps, Typography } from 'antd';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-const BookPage: React.FC = () => {
-  const [upcomings, setUpcomings] = useState<BookFormData>([]);
-  const [pasts, setPasts] = useState<BookFormData>([]);
+const { Step } = Steps;
+const { Title, Text } = Typography;
 
-  useEffect(() => {
-    (async () => {
-      // 初始化代码
-      const response = await api.getBook();
-      const data = await response.list;
-      console.log(data);
-      setUpcomings(
-        data.filter((item: BookFormData) => Date.parse(item.departmentDate) > Date.now())
-      );
-      setPasts(data.filter((item: BookFormData) => Date.parse(item.departmentDate) <= Date.now()));
-    })();
-  }, []);
+const OrderPage = () => {
+  const { loginInfo, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  let location = useLocation();
+  const { state } = location;
+  console.log(state);
 
   return (
     <div className="w-full min-h-screen bg-white">
       <Header loginIsDisplay={false} />
 
-      <div className="max-w-[540px] mx-auto px-4 pt-14 pb-10">
-        <h1 className="text-[28px] font-bold text-[#111416] font-['Plus_Jakarta_Sans'] text-left mb-6">
-          My Bookings
-        </h1>
-        <h1 className="text-[20px] font-bold text-[#111416] font-['Plus_Jakarta_Sans'] text-left mb-2">
-          Upcoming
-        </h1>
-        {upcomings.map((item: BookFormData) => (
-          <>
-            <h1 className="text-[14px] text-[#111416] font-['Plus_Jakarta_Sans'] text-left mb-1">
-              Booking Reference: &nbsp;&nbsp;{item && item.flightNumber}
-            </h1>
-            <h1 className="text-[14px] font-bold text-[#111416] font-['Plus_Jakarta_Sans'] text-left mb-1">
-              Departure: &nbsp;&nbsp;(
-              {item && item.departureCity}
-              &nbsp;&nbsp;to&nbsp;&nbsp;
-              {item && item.destinationCity})
-            </h1>
-            <h1 className="text-[14px] text-[#111416] font-['Plus_Jakarta_Sans'] text-left mb-6">
-              {item && item.departmentDate}&nbsp;&nbsp;{item && item.departmentTime}~
-              {item && item.arrivalTime}
-            </h1>
-          </>
-        ))}
+      <div className="max-w-[800px] mx-auto px-4 pt-5 pb-10">
+        <div style={{ padding: '24px', background: '#f0f2f5' }}>
+          <Card>
+            <Steps current={1} style={{ marginBottom: '16px' }}>
+              <Step title="选择航班" />
+              <Step title="填写订单" />
+              <Step title="支付" />
+              <Step title="完成" />
+            </Steps>
 
-        <h1 className="text-[20px] font-bold text-[#111416] font-['Plus_Jakarta_Sans'] text-left mb-6 line-height-[20px]"></h1>
-        <h1 className="text-[20px] font-bold text-[#111416] font-['Plus_Jakarta_Sans'] text-left mb-6">
-          Past
-        </h1>
-        {pasts.map((item: BookFormData) => (
-          <>
-            <h1 className="text-[14px] text-[#111416] font-['Plus_Jakarta_Sans'] text-left mb-1">
-              Booking Reference: &nbsp;&nbsp;{item && item.flightNumber}
-            </h1>
-            <h1 className="text-[14px] font-bold text-[#111416] font-['Plus_Jakarta_Sans'] text-left mb-1">
-              Departure: &nbsp;&nbsp;(
-              {item && item.departureCity}
-              &nbsp;&nbsp;to&nbsp;&nbsp;
-              {item && item.destinationCity})
-            </h1>
-            <h1 className="text-[14px] text-[#111416] font-['Plus_Jakarta_Sans'] text-left mb-6">
-              {item && item.departmentDate}&nbsp;&nbsp;{item && item.departmentTime}~
-              {item && item.arrivalTime}
-            </h1>
-          </>
-        ))}
+            <div style={{ margin: '0 0 16px 0' }}>
+              <Title level={4} style={{ marginBottom: 6 }}>
+                订单信息
+              </Title>
+              <Descriptions
+                bordered
+                column={1}
+                size="small"
+                style={{ marginBottom: 16 }}
+                contentStyle={{ padding: '6px 12px' }}
+                labelStyle={{ padding: '6px 12px' }}
+              >
+                <Descriptions.Item label="航班路线">
+                  <div style={{ lineHeight: 1.5 }}>
+                    <Text strong>
+                      {state.departureCity} ({state.departureCityAbbr})
+                    </Text>
+                    <span style={{ margin: '0 8px' }}>→</span>
+                    <Text strong>
+                      {state.destinationCity} ({state.destinationCityAbbr})
+                    </Text>
+                  </div>
+                </Descriptions.Item>
+                <Descriptions.Item label="航班时间">
+                  <div style={{ lineHeight: 1.5 }}>
+                    <Text>
+                      {state.departmentDate} {state.departmentTime} - {state.arrivalDate}
+                      {state.arrivalTime}
+                    </Text>
+                  </div>
+                </Descriptions.Item>
+                <Descriptions.Item label="航班号">{state.flightNumber}</Descriptions.Item>
+                <Descriptions.Item label="出发机场">
+                  {state.departureAirportName} {state.departureAirportTerminal}
+                </Descriptions.Item>
+                <Descriptions.Item label="价格">
+                  <Text strong style={{ fontSize: '16px', color: '#ff4d4f' }}>
+                    ¥{state.price}
+                  </Text>
+                </Descriptions.Item>
+              </Descriptions>
+            </div>
+
+            <Divider style={{ margin: '12px 0' }} />
+
+            <Title level={4} style={{ marginBottom: 12 }}>
+              乘客信息
+            </Title>
+            <Descriptions
+              bordered
+              column={3}
+              size="small"
+              contentStyle={{ padding: '6px 12px' }}
+              labelStyle={{ padding: '6px 12px' }}
+            >
+              <Descriptions.Item label="姓名">{loginInfo?.name}</Descriptions.Item>
+              <Descriptions.Item label="联系电话">{loginInfo?.phone}</Descriptions.Item>
+            </Descriptions>
+
+            <Divider style={{ margin: '12px 0' }} />
+
+            <div style={{ textAlign: 'center', marginTop: '16px' }}>
+              <Button
+                type="primary"
+                size="large"
+                icon={<CreditCardOutlined />}
+                style={{ marginRight: '12px' }}
+                onClick={() => navigate('/payment', { state: state })}
+              >
+                立即支付
+              </Button>
+              <Button size="large" onClick={() => navigate('/search')}>
+                返回修改
+              </Button>
+            </div>
+          </Card>
+        </div>
       </div>
     </div>
   );
 };
 
-export default BookPage;
+export default OrderPage;

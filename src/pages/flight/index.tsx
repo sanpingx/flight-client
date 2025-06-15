@@ -3,8 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import Header from '@components/common/Header';
 import Button from '@components/ui/Button';
 import InputField from '@components/ui/InputField';
-import { FlightFormData } from '@types/Flight';
-import * as api from '@api';
+import { FlightFormData } from '@/types';
+import * as api from '@/api';
 import toast from '@config/toast';
 
 const FlightPage: React.FC = () => {
