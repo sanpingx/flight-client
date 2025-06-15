@@ -14,7 +14,7 @@ export default defineConfig(({command,mode}:ConfigEnv) :UserConfig =>{
     return {
 
       build: {
-        outDir: "build",
+        outDir: "dest",
       },
       plugins: [react()],
       resolve: {
