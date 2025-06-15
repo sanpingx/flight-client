@@ -40,26 +40,27 @@ jobs:
         echo "IMAGE_TAG=${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ github.sha }}" >> $GITHUB_ENV
 
     - name: Build docker image
-      working-directory: ./
-      run: docker build -t $IMAGE_TAG .
+      # working-directory: ./
+      # run: docker build -t $IMAGE_TAG .
+      run: docker build -t client-app .
 
-    - name: Push Docker image to ECR
-      run: docker push $IMAGE_TAG
+    # - name: Push Docker image to ECR
+    #   run: docker push $IMAGE_TAG
 
-    - name: Replace image tag in ECS task definition
-      run: sed -i "s|replace-this-later|$IMAGE_TAG|" $TASK_DEFINITION_FILE
+    # - name: Replace image tag in ECS task definition
+    #   run: sed -i "s|replace-this-later|$IMAGE_TAG|" $TASK_DEFINITION_FILE
 
-    - name: Register new task definition
-      id: register-task
-      run: |
-        TASK_DEF_ARN=$(aws ecs register-task-definition \
-          --cli-input-json file://$TASK_DEFINITION_FILE \
-          --query 'taskDefinition.taskDefinitionArn' --output text)
-        echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
+    # - name: Register new task definition
+    #   id: register-task
+    #   run: |
+    #     TASK_DEF_ARN=$(aws ecs register-task-definition \
+    #       --cli-input-json file://$TASK_DEFINITION_FILE \
+    #       --query 'taskDefinition.taskDefinitionArn' --output text)
+    #     echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
 
-    - name: Update ECS service
-      run: |
-        aws ecs update-service \
-          --cluster ${{ env.ECS_CLUSTER_NAME }} \
-          --service ${{ env.ECS_SERVICE_NAME }} \
-          --task-definition $TASK_DEF_ARN
+    # - name: Update ECS service
+    #   run: |
+    #     aws ecs update-service \
+    #       --cluster ${{ env.ECS_CLUSTER_NAME }} \
+    #       --service ${{ env.ECS_SERVICE_NAME }} \
+    #       --task-definition $TASK_DEF_ARN
