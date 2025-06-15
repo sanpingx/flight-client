@@ -41,8 +41,7 @@ jobs:
 
     - name: Build docker image
       # working-directory: ./
-      # run: docker build -t $IMAGE_TAG .
-      run: docker build --no-cache -t client-app .
+      run: docker build -t $IMAGE_TAG .
 
     - name: Push Docker image to ECR
       run: docker push $IMAGE_TAG
